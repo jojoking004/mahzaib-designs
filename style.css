@@ -53,7 +53,7 @@ body {
     50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
     100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
 }
-/* (Other blob and cotton candy animations are unchanged) */
+
 .cotton-candy {
     position: absolute; bottom: -150px; width: 80px; height: 80px;
     background: var(--soft-rose); border-radius: 50%; opacity: 0;
@@ -68,10 +68,10 @@ body {
 
 @keyframes floatCandy {
     0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-    20% { opacity: 0.7; } 80% { opacity: 0.7; }
+    20% { opacity: 0.7; }
+    80% { opacity: 0.7; }
     100% { transform: translateY(-120vh) translateX(50px) rotate(360deg); opacity: 0; }
 }
-
 
 .cursor-trail {
     position: fixed; width: 15px; height: 15px;
@@ -81,7 +81,7 @@ body {
     mix-blend-mode: difference; z-index: 9999;
 }
 
-/* NEW: Hide custom cursor on touch devices */
+/* Hide custom cursor on touch devices */
 @media (pointer: coarse) {
     .cursor-trail {
         display: none;
@@ -131,7 +131,7 @@ header {
 .logo a:hover::after { left: 150%; }
 .logo a:hover { color: var(--neon-yellow); text-shadow: 0 0 10px var(--neon-yellow); }
 
-/* NEW: Hide hamburger button on desktop */
+/* Hide hamburger button on desktop */
 .nav-toggle {
     display: none;
 }
@@ -187,7 +187,7 @@ nav a:hover::after { width: 100%; }
     box-shadow: 0 8px 30px rgba(255, 46, 99, 0.6);
 }
 
-/* --- OTHER SECTIONS (Projects, About, Contact, Footer) --- */
+/* --- OTHER SECTIONS --- */
 .section-title {
     font-family: var(--font-accent);
     font-size: clamp(2.5rem, 8vw, 3.5rem);
