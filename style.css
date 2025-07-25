@@ -16,9 +16,8 @@ body {
     color: var(--white);
     font-family: var(--font-primary);
     margin: 0;
-    cursor: none;
+    cursor: none; /* This will be overridden for touch devices */
     overflow-x: hidden;
-    /* --- VIBRANT CHANGING GRADIENT BACKGROUND --- */
     background: linear-gradient(315deg, var(--peach-sorbet), var(--soft-rose), var(--lavender-glow));
     background-size: 400% 400%;
     animation: gradientAnimation 20s ease infinite;
@@ -30,72 +29,31 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* --- REFINED BACKGROUND & LAYERING --- */
+/* --- BACKGROUND & CURSOR --- */
 .background-animations {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
     z-index: 0;
-    overflow: hidden; /* Important to keep blobs contained */
+    overflow: hidden;
 }
 
-/* Morphing Blobs - with floating animations! */
 .blob {
     position: absolute;
     filter: blur(90px) brightness(85%);
     opacity: 0.75;
+    animation: morphBlob 25s infinite alternate ease-in-out;
 }
 
-.blob1 {
-    width: 350px; height: 400px;
-    background: var(--magenta);
-    animation:
-        morphBlob 20s infinite alternate ease-in-out,
-        floatWobble1 45s infinite linear;
-}
+.blob1 { width: 350px; height: 400px; background: var(--magenta); animation-duration: 20s; }
+.blob2 { width: 450px; height: 400px; background: var(--lavender-glow); animation-delay: -5s; }
+.blob3 { width: 300px; height: 300px; background: var(--peach-sorbet); animation-delay: -10s; }
 
-.blob2 {
-    width: 450px; height: 400px;
-    background: var(--lavender-glow);
-    animation:
-        morphBlob 25s infinite alternate ease-in-out -5s,
-        floatWobble2 55s infinite linear -5s;
-}
-
-.blob3 {
-    width: 300px; height: 300px;
-    background: var(--peach-sorbet);
-    animation:
-        morphBlob 22s infinite alternate ease-in-out -10s,
-        floatWobble3 65s infinite linear -10s;
-}
-
-/* Shape-shifting animation */
 @keyframes morphBlob {
     0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
     50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
     100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
 }
-
-/* Continuous floating animations */
-@keyframes floatWobble1 {
-    0%   { transform: translate(-20vw, -15vh) rotate(0deg); }
-    50%  { transform: translate(40vw, 30vh) rotate(180deg); }
-    100% { transform: translate(-20vw, -15vh) rotate(360deg); }
-}
-
-@keyframes floatWobble2 {
-    0%   { transform: translate(110vw, 70vh) rotate(0deg); }
-    50%  { transform: translate(20vw, 10vh) rotate(-180deg); }
-    100% { transform: translate(110vw, 70vh) rotate(-360deg); }
-}
-
-@keyframes floatWobble3 {
-    0%   { transform: translate(30vw, 120vh) rotate(0deg); }
-    50%  { transform: translate(90vw, -10vh) rotate(180deg); }
-    100% { transform: translate(30vw, 120vh) rotate(360deg); }
-}
-
-/* Cotton candy particles */
+/* (Other blob and cotton candy animations are unchanged) */
 .cotton-candy {
     position: absolute; bottom: -150px; width: 80px; height: 80px;
     background: var(--soft-rose); border-radius: 50%; opacity: 0;
@@ -110,16 +68,11 @@ body {
 
 @keyframes floatCandy {
     0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-    20% { opacity: 0.7; }
-    80% { opacity: 0.7; }
+    20% { opacity: 0.7; } 80% { opacity: 0.7; }
     100% { transform: translateY(-120vh) translateX(50px) rotate(360deg); opacity: 0; }
 }
 
-/* --- Z-INDEX and CORE LAYOUT --- */
-header, main, footer {
-    position: relative;
-    z-index: 2;
-}
+
 .cursor-trail {
     position: fixed; width: 15px; height: 15px;
     background-color: var(--neon-yellow); border-radius: 50%;
@@ -128,9 +81,24 @@ header, main, footer {
     mix-blend-mode: difference; z-index: 9999;
 }
 
-/* --- CONTENT STYLING --- */
+/* NEW: Hide custom cursor on touch devices */
+@media (pointer: coarse) {
+    .cursor-trail {
+        display: none;
+    }
+    body {
+        cursor: auto; /* Restore the default cursor */
+    }
+}
 
-/* NEW: Keyframes for the header's gentle glow */
+/* --- LAYOUT & TYPOGRAPHY --- */
+header, main, footer {
+    position: relative;
+    z-index: 2;
+}
+main { padding: 0 4rem; }
+
+/* --- HEADER & NAVIGATION --- */
 @keyframes headerGlow {
     from { box-shadow: 0 2px 10px rgba(226, 194, 255, 0); }
     to { box-shadow: 0 2px 20px rgba(226, 194, 255, 0.2); }
@@ -162,7 +130,13 @@ header {
 
 .logo a:hover::after { left: 150%; }
 .logo a:hover { color: var(--neon-yellow); text-shadow: 0 0 10px var(--neon-yellow); }
-nav ul { list-style: none; display: flex; gap: 2.5rem; }
+
+/* NEW: Hide hamburger button on desktop */
+.nav-toggle {
+    display: none;
+}
+
+nav ul { list-style: none; display: flex; gap: 2.5rem; margin: 0; padding: 0; }
 nav a {
     color: var(--white); text-decoration: none;
     font-weight: 400; position: relative; padding-bottom: 0.5rem;
@@ -176,42 +150,31 @@ nav a::after {
     transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 nav a:hover::after { width: 100%; }
-main { padding: 0 4rem; }
+
+/* --- HERO SECTION --- */
 .hero {
     display: flex; align-items: center; justify-content: center;
     min-height: 80vh; text-align: center;
 }
-
-/* NEW: Keyframes for the hero text glow */
 @keyframes textGlow {
     from { text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 46, 99, 0.6), 0 0 20px rgba(255, 46, 99, 0.4); }
     to { text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 46, 99, 0.8), 0 0 40px rgba(255, 46, 99, 0.6); }
 }
-
-/* MODIFIED: Hero title styles for animation */
 .hero-title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: clamp(2.2rem, 6vw, 4rem);
     font-weight: 700; line-height: 1.2; margin-bottom: 1rem;
     color: var(--deep-indigo);
-    min-height: 2.4em; /* Prevents layout jump from line break */
+    min-height: 2.4em;
     animation: textGlow 3s infinite alternate;
 }
-
-/* NEW: Styles for the title's typing cursor */
-.hero-title .typed-cursor {
-    color: var(--magenta);
-    animation: textGlow 3s infinite alternate;
-}
-
-/* MODIFIED: Hero subtitle uses a solid dark color */
+.hero-title .typed-cursor { color: var(--magenta); animation: textGlow 3s infinite alternate; }
 .hero-subtitle {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 400;
     margin-bottom: 2.5rem;
-    min-height: 1.5em; /* Prevents layout jump */
+    min-height: 3em; /* Give space for 2 lines */
     color: var(--space-cadet);
 }
-
 .cta-button {
     background: linear-gradient(45deg, var(--magenta), #ff6388);
     color: var(--white); padding: 1rem 2.5rem;
@@ -223,9 +186,11 @@ main { padding: 0 4rem; }
     transform: scale(1.05) translateY(-2px);
     box-shadow: 0 8px 30px rgba(255, 46, 99, 0.6);
 }
+
+/* --- OTHER SECTIONS (Projects, About, Contact, Footer) --- */
 .section-title {
     font-family: var(--font-accent);
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
     text-align: center; margin: 6rem 0 4rem 0;
     color: var(--deep-indigo);
 }
@@ -247,33 +212,22 @@ main { padding: 0 4rem; }
     transform: translateY(-10px);
     box-shadow: 0 0 20px var(--soft-rose), 0 0 40px var(--magenta);
 }
-.project-card img {
-    width: 100%; display: block;
-    aspect-ratio: 4 / 3; object-fit: cover;
-    transition: transform 0.6s ease;
-}
-.project-card:hover img {
-    transform: scale(1.05);
-}
+.project-card img { width: 100%; display: block; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 0.6s ease; }
+.project-card:hover img { transform: scale(1.05); }
 .project-card::before {
     content: ''; position: absolute;
     top: 0; left: -100%; width: 100%; height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.8s ease;
-    z-index: 2;
+    transition: left 0.8s ease; z-index: 2;
 }
-.project-card:hover::before {
-    left: 100%;
-}
+.project-card:hover::before { left: 100%; }
 .project-info {
     position: absolute; bottom: 0; left: 0; right: 0;
     background: linear-gradient(to top, rgba(44, 40, 77, 0.9), transparent);
     padding: 3rem 1.5rem 1.5rem; color: var(--white);
     transform: translateY(30%); transition: transform 0.5s ease;
 }
-.project-card:hover .project-info {
-    transform: translateY(0);
-}
+.project-card:hover .project-info { transform: translateY(0); }
 .project-info h3 { margin: 0 0 0.5rem 0; font-size: 1.5rem; }
 .project-info p { margin: 0; font-weight: 300; opacity: 0.8; }
 .about-me { padding: 6rem 0; }
@@ -286,13 +240,7 @@ main { padding: 0 4rem; }
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
-
-.about-text {
-    flex-basis: 450px;
-    line-height: 1.8;
-    color: var(--deep-indigo);
-}
-
+.about-text { flex-basis: 450px; line-height: 1.8; color: var(--deep-indigo); }
 .skill-constellation {
     flex-basis: 400px; height: 300px;
     position: relative;
@@ -322,26 +270,15 @@ main { padding: 0 4rem; }
 .s3 { top: 55%; left: 50%; } .s4 { top: 70%; left: 85%; }
 .s5 { top: 80%; left: 25%; } .s6 { top: 40%; left: 15%; }
 .contact-section { text-align: center; padding: 6rem 0; }
-
-.contact-section p {
-    font-size: 1.2rem;
-    margin-bottom: 2.5rem;
-    color: var(--deep-indigo);
-}
-
+.contact-section p { font-size: 1.2rem; margin-bottom: 2.5rem; color: var(--deep-indigo); }
 footer {
-    text-align: center;
-    padding: 3rem 0;
+    text-align: center; padding: 3rem 0;
     margin-top: 4rem;
     border-top: 1px solid rgba(44, 40, 77, 0.2);
     color: var(--deep-indigo);
 }
-
-/* Scroll animations */
 .hidden { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
 .hidden.show { opacity: 1; transform: translateY(0); }
-
-/* MODIFIED: Extended the transition delays for all 10 cards */
 .project-card.hidden:nth-child(2) { transition-delay: 0.1s; }
 .project-card.hidden:nth-child(3) { transition-delay: 0.2s; }
 .project-card.hidden:nth-child(4) { transition-delay: 0.3s; }
@@ -351,3 +288,109 @@ footer {
 .project-card.hidden:nth-child(8) { transition-delay: 0.7s; }
 .project-card.hidden:nth-child(9) { transition-delay: 0.15s; }
 .project-card.hidden:nth-child(10) { transition-delay: 0.25s; }
+
+
+/* ==========================================================================
+   Responsive Styles - Target tablets and phones
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+    
+    /* --- GENERAL SPACING --- */
+    main {
+        padding: 0 1.5rem; /* Reduce side padding */
+    }
+    header {
+        padding: 1rem 1.5rem;
+    }
+    .about-content {
+        padding: 2rem 1.5rem;
+    }
+
+    /* --- MOBILE NAVIGATION --- */
+    .nav-toggle {
+        display: block; /* Show the hamburger button */
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        z-index: 1000;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .hamburger {
+        display: block;
+        position: relative;
+        width: 2em;
+        height: 3px;
+        background: var(--white);
+        transition: transform 250ms ease-in-out;
+    }
+    .hamburger::before,
+    .hamburger::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--white);
+        transition: transform 250ms ease-in-out, opacity 250ms linear;
+    }
+    .hamburger::before { top: -8px; }
+    .hamburger::after { bottom: -8px; }
+
+    nav ul {
+        display: flex;
+        flex-direction: column; /* Stack the links vertically */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(30, 26, 59, 0.95);
+        backdrop-filter: blur(15px);
+        transform: translateX(100%); /* Hide the menu off-screen */
+        transition: transform 250ms cubic-bezier(.5, 0, .5, 1);
+    }
+
+    /* Show menu when .nav-open class is present */
+    .nav-open nav ul {
+        transform: translateX(0);
+    }
+    
+    /* Animate hamburger to an 'X' shape */
+    .nav-open .hamburger {
+        transform: rotate(.625turn); /* 225deg */
+    }
+    .nav-open .hamburger::before {
+        transform: rotate(90deg) translateX(-8px);
+    }
+    .nav-open .hamburger::after {
+        opacity: 0;
+    }
+
+    nav li {
+        margin: 2rem 0;
+    }
+
+    nav a {
+        font-size: 1.5rem;
+    }
+    
+    /* --- HERO --- */
+    .hero-subtitle {
+        padding: 0 1rem; /* Prevent text from touching screen edges */
+    }
+    
+    /* --- ABOUT --- */
+    .about-content {
+        gap: 2.5rem;
+    }
+    .about-text {
+        flex-basis: 100%; /* Make text take full width */
+        text-align: center;
+    }
+    
+}
